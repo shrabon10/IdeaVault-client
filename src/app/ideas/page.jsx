@@ -21,12 +21,12 @@ const IdeasPage = async ({ searchParams }) => {
   console.log(search);
 
   const res = await fetch(
-    `${search ? `${NEXT_PUBLIC_SERVER_URL}/searchedIdeas?search=${search}` : `${process.env.NEXT_PUBLIC_SERVER_URL}/ideas`}`,
+    `${search ? `${NEXT_PUBLIC_API_URL}/searchedIdeas?search=${search}` : `${process.env.NEXT_PUBLIC_API_URL}/ideas`}`,
   );
   const ideas = await res.json();
 
   const categoryRes = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/categories`,
+    `${process.env.NEXT_PUBLIC_API_URL}/categories`,
   );
   const categories = await categoryRes.json();
   console.log(ideas);

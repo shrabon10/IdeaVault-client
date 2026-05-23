@@ -16,7 +16,7 @@ const MyIdeasPage = async () => {
   const { token } = await auth.api.getToken({
     headers: await headers(),
   });
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/ideas`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ideas`);
   const ideas = await res.json();
   const myIdeas = ideas.filter((idea) => idea.userId === user?.id);
   return (

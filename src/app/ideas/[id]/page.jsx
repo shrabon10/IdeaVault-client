@@ -16,7 +16,7 @@ const IdeaDetailsPage = async ({ params }) => {
   });
   const { id } = await params;
   console.log(token);
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/idea/${id}`, {
     headers: {
       authorization: `Bearer ${token}`,
     },
@@ -25,7 +25,7 @@ const IdeaDetailsPage = async ({ params }) => {
   console.log(idea);
 
   const commentRes = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/comments`,
+    `${process.env.NEXT_PUBLIC_API_URL}/comments`,
   );
   const allComments = await commentRes.json();
   console.log(allComments);

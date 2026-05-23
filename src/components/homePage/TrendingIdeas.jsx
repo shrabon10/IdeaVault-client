@@ -4,7 +4,7 @@ import TrendingCard from "../shared/TrendingCard";
 
 const TrendingIdeas = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/trendingIdeas`,
+    `${process.env.NEXT_PUBLIC_API_URL}/trendingIdeas`,
   );
   const trendingIdeaData = await res.json();
   console.log(trendingIdeaData);

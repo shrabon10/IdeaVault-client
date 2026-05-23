@@ -29,7 +29,7 @@ const CommentInput = ({ idea }) => {
       createdAt: new Date(),
     };
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comment`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/comment`, {
         method: "POST",
         headers: {
           "content-type": "application/json",

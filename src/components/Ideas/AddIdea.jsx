@@ -34,7 +34,7 @@ const AddIdea = () => {
       userId: user?.id,
     };
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/idea`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

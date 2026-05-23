@@ -12,7 +12,7 @@ const MyInteractionsPage = async () => {
   const { user } = await auth.api.getSession({
     headers: await headers(),
   });
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/comments`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/comments`);
   const allComments = await res.json();
   const comments = allComments.filter((comment) => comment.userId === user.id);
 
