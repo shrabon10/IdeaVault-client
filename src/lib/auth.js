@@ -8,7 +8,6 @@ const db = client.db("IdeaVault");
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
-    // Optional: if you don't provide a client, database transactions won't be enabled.
     client,
   }),
   emailAndPassword: {
@@ -24,10 +23,4 @@ export const auth = betterAuth({
   session: {
     cookieCache: { enabled: true, strategy: "jwt", maxAge: 40 * 24 * 60 * 60 },
   },
-  // account: {
-  //   accountLinking: {
-  //     enabled: true,
-  //     trustedProviders: ["google"], // Add your providers
-  //   },
-  // },
 });
