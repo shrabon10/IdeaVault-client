@@ -1,9 +1,9 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
-import { Toaster } from "react-hot-toast";
-import { ThemeProvider } from "next-themes";
+import Providers from "@/components/shared/Providers";
 
 const PlusJakatraSans = Plus_Jakarta_Sans({
   variable: "--plus_jakatra_sans",
@@ -20,19 +20,18 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={` ${PlusJakatraSans.variable} duration-700 h-full antialiased`}
+      className={`${PlusJakatraSans.variable} duration-700 h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col justify-between gap-20 ">
-        <ThemeProvider
-          attribute="data-theme"
-          enableSystem
-          defaultTheme="system"
-        >
-          <Navbar></Navbar>
-          <div className="container mx-auto grow pt-40">{children}</div>
-          <Footer></Footer>
-          <Toaster></Toaster>
-        </ThemeProvider>
+      <body className="min-h-screen flex flex-col justify-between gap-20">
+        <Providers>
+          <Navbar />
+
+          <div className="container mx-auto grow pt-40">
+            {children}
+          </div>
+
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
