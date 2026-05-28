@@ -1,111 +1,119 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect } from "react"; // 🎯 useEffect ইম্পোর্ট করা হলো
 
 const Banner = () => {
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const totalSlides = 3;
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) => (prev === 1 ? totalSlides : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentSlide((prev) => (prev === totalSlides ? 1 : prev + 1));
+  };
+
+  // 🎯 অটো-স্লাইড এর ম্যাজিক লজিক
+  useEffect(() => {
+    // প্রতি ৪ সেকেন্ড (৪০০০ মিলিসেকেন্ড) পর পর handleNext ফাংশনটি কল হবে
+    const slideInterval = setInterval(() => {
+      handleNext();
+    }, 4000);
+
+    // কম্পোনেন্ট আনমাউন্ট বা স্লাইড চেঞ্জ হলে আগের ইন্টারভালটি ক্লিয়ার করবে (মেমোরি লিক রোধ করতে)
+    return () => clearInterval(slideInterval);
+  }, [currentSlide]); // currentSlide ডিপেন্ডেন্সি দেওয়া হয়েছে যাতে ইউজার ক্লিক করলেও ইন্টারভাল রিসেট হয়
+
+  const slides = [
+    {
+      id: 1,
+      img: "/assets/first.avif",
+      title: "Share Your Ideas",
+      gradientText: "With the World",
+      desc: "Turn your thoughts into real-world solutions. Post your startup ideas and let others discover, improve, and collaborate with you.",
+    },
+    {
+      id: 2,
+      img: "/assets/second.avif",
+      title: "Discover Innovative",
+      gradientText: "Startup Ideas",
+      desc: "Explore creative ideas from developers, entrepreneurs, and students around the world. Get inspired and build your next big project.",
+    },
+    {
+      id: 3,
+      img: "/assets/third.avif",
+      title: "Connect, Collaborate",
+      gradientText: "& Build Together",
+      desc: "Find like-minded people, join discussions, and work together to turn ideas into real products that make an impact.",
+    },
+  ];
+
   return (
-    <div>
-      <div className="carousel w-full">
-        
-        {/* Slide 1 */}
-        <div id="slide1" className="carousel-item relative w-full">
+    <div className="w-full transition-colors duration-300">
+      <div className="w-full rounded-2xl overflow-hidden shadow-2xl relative h-[480px] md:h-[550px] lg:h-[600px] bg-black">
+        {slides.map((slide) => (
           <div
-            style={{
-              backgroundImage: "url('/assets/first.avif')",
-            }}
-            className="px-2 space-y-5 bg-cover bg-center w-full h-[600px] rounded text-white flex justify-center items-center flex-col"
+            key={slide.id}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out flex justify-center items-center flex-col text-white px-6 md:px-12 lg:px-16 ${
+              currentSlide === slide.id
+                ? "opacity-100 z-10"
+                : "opacity-0 z-0 pointer-events-none"
+            }`}
           >
-            <h1 className="text-2xl lg:text-5xl font-bold text-center">
-              Share Your Ideas With the World
-            </h1>
+            <Image
+              src={slide.img}
+              alt={slide.title}
+              fill
+              priority={slide.id === 1}
+              className="object-cover object-center w-full h-full"
+              unoptimized
+            />
+            <div className="absolute inset-0 bg-black/65 backdrop-blur-[0.5px]" />
 
-            <p className="max-w-[400px] lg:max-w-2xl text-center">
-              Turn your thoughts into real-world solutions. Post your startup
-              ideas and let others discover, improve, and collaborate with you.
-            </p>
-
-            <Link href="/ideas">
-              <button className="btn">Explore Ideas</button>
-            </Link>
+            <div className="relative z-10 text-center space-y-4 max-w-xs md:max-w-2xl lg:max-w-4xl mx-auto pb-12 lg:pb-0">
+              <h1 className="text-2xl md:text-4xl lg:text-6xl font-black tracking-tight leading-tight">
+                {slide.title} <br />
+                <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent block sm:inline mt-1 sm:mt-0">
+                  {slide.gradientText}
+                </span>
+              </h1>
+              <p className="text-xs md:text-base font-medium text-white/80 leading-relaxed max-w-md md:max-w-xl lg:max-w-2xl mx-auto line-clamp-3 lg:line-clamp-none">
+                {slide.desc}
+              </p>
+              <div className="pt-2 sm:pt-4">
+                <Link href="/ideas">
+                  <button className="px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                    Explore Ideas
+                  </button>
+                </Link>
+              </div>
+            </div>
           </div>
+        ))}
 
-          <div className="absolute left-5 right-5 top-[100px] lg:top-1/2 flex -translate-y-1/2 transform justify-between">
-            <a href="#slide3" className="btn btn-circle">
-              ❮
-            </a>
-
-            <a href="#slide2" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
-        </div>
-
-        {/* Slide 2 */}
-        <div id="slide2" className="carousel-item relative w-full">
-          <div
-            style={{
-              backgroundImage: "url('/assets/second.avif')",
-            }}
-            className="px-2 space-y-5 bg-cover bg-center w-full h-[600px] rounded text-white flex justify-center items-center flex-col"
+        {/* রেসপন্সিভ অ্যারো বাটন কন্ট্রোলার */}
+        <div
+          className="absolute z-20 flex gap-4
+          bottom-5 left-1/2 -translate-x-1/2 justify-center w-auto
+          lg:bottom-auto lg:left-auto lg:translate-x-0 lg:top-1/2 lg:-translate-y-1/2 lg:justify-between lg:w-[calc(100%-40px)] lg:mx-5"
+        >
+          <button
+            onClick={handlePrev}
+            className="btn btn-circle btn-md bg-black/40 hover:bg-black/70 border border-white/10 text-white backdrop-blur-md transition-all cursor-pointer shadow-lg active:scale-90"
+            aria-label="Previous slide"
           >
-            <h1 className="text-2xl lg:text-5xl font-bold text-center">
-              Discover Innovative Startup Ideas
-            </h1>
-
-            <p className="max-w-[400px] lg:max-w-2xl text-center">
-              Explore creative ideas from developers, entrepreneurs, and
-              students around the world. Get inspired and build your next big
-              project.
-            </p>
-
-            <Link href="/ideas">
-              <button className="btn">Explore Ideas</button>
-            </Link>
-          </div>
-
-          <div className="absolute left-5 right-5 top-[100px] lg:top-1/2 flex -translate-y-1/2 transform justify-between">
-            <a href="#slide1" className="btn btn-circle">
-              ❮
-            </a>
-
-            <a href="#slide3" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
-        </div>
-
-        {/* Slide 3 */}
-        <div id="slide3" className="carousel-item relative w-full">
-          <div
-            style={{
-              backgroundImage: "url('/assets/third.avif')",
-            }}
-            className="px-2 space-y-5 bg-cover bg-center w-full h-[600px] rounded text-white flex justify-center items-center flex-col"
+            ❮
+          </button>
+          <button
+            onClick={handleNext}
+            className="btn btn-circle btn-md bg-black/40 hover:bg-black/70 border border-white/10 text-white backdrop-blur-md transition-all cursor-pointer shadow-lg active:scale-90"
+            aria-label="Next slide"
           >
-            <h1 className="text-2xl lg:text-5xl font-bold text-center">
-              Connect, Collaborate & Build Together
-            </h1>
-
-            <p className="max-w-[400px] lg:max-w-2xl text-center">
-              Find like-minded people, join discussions, and work together to
-              turn ideas into real products that make an impact.
-            </p>
-
-            <Link href="/ideas">
-              <button className="btn">Explore Ideas</button>
-            </Link>
-          </div>
-
-          <div className="absolute left-5 right-5 top-[100px] lg:top-1/2 flex -translate-y-1/2 transform justify-between">
-            <a href="#slide2" className="btn btn-circle">
-              ❮
-            </a>
-
-            <a href="#slide1" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
+            ❯
+          </button>
         </div>
       </div>
     </div>
