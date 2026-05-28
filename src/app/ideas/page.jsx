@@ -21,12 +21,12 @@ const IdeasPage = async ({ searchParams }) => {
   console.log(search);
 
   const res = await fetch(
-    `${search ? `${NEXT_PUBLIC_API_URL}/searchedIdeas?search=${search}` : `${process.env.NEXT_PUBLIC_API_URL}/ideas`}`,
+    `${search ? `${process.env.NEXT_PUBLIC_SERVER_URL}/searchedIdeas?search=${search}` : `${process.env.NEXT_PUBLIC_SERVER_URL}/ideas`}`,
   );
   const ideas = await res.json();
 
   const categoryRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/categories`,
   );
   const categories = await categoryRes.json();
   console.log(ideas);
@@ -40,7 +40,7 @@ const IdeasPage = async ({ searchParams }) => {
           productivity, learning, and innovation.
         </p>{" "}
       </div>
-      <div className="grid grid-cols-12 gap-2 md:gap-0">
+      <div className="grid grid-cols-12 gap-2 md:gap-4  ">
         <div className="col-span-12 md:col-span-9">
           <Input></Input>
         </div>

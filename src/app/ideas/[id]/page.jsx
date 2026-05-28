@@ -15,110 +15,172 @@ const IdeaDetailsPage = async ({ params }) => {
     headers: await headers(),
   });
   const { id } = await params;
-  console.log(token);
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/idea/${id}`, {
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${id}`, {
     headers: {
       authorization: `Bearer ${token}`,
     },
   });
   const idea = await res.json();
-  console.log(idea);
 
   const commentRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/comments`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/comments`,
   );
   const allComments = await commentRes.json();
-  console.log(allComments);
   const comments = allComments.filter((comment) => comment.ideaId === idea._id);
-  console.log(comments);
 
-  console.log(idea);
+  // 🎯 ব্যানার ইমেজ সেফটি গার্ড
+  const defaultBanner =
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
+  const isBannerValid = idea?.image && idea.image.startsWith("http");
+  const finalBannerSrc = isBannerValid ? idea.image : defaultBanner;
+
   return (
-    <div className="max-w-5xl mx-auto py-10">
-      <div className="space-y-4 px-2 bg-background/20">
-        <div className="overflow-hidden rounded-2xl">
+    <div className="max-w-4xl mx-auto py-10 px-4 md:px-6 space-y-10">
+      {/* 🎯 মেইন কার্ড কন্টেইনার - লাইট মোডে সলিড সাদা, ডার্কে রিচ জিঙ্ক */}
+      <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-3xl p-5 md:p-8 shadow-sm space-y-6">
+        {/* মেইন ব্যানার ইমেজ (ফিক্সড রেশিও ও ওভারফ্লো প্রোটেকশন) */}
+        <div className="relative w-full h-[300px] md:h-[450px] overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-900">
           <Image
-            src={idea?.image || ""}
-            alt={idea?.name}
-            width={1200}
-            height={700}
-            className="w-full h-[450px] object-cover hover:scale-105 duration-300"
+            src={finalBannerSrc}
+            alt={idea?.name || "Idea Banner"}
+            fill
+            className="object-cover hover:scale-[1.02] duration-500 transition-transform"
+            unoptimized
           />
         </div>
 
-        <div className="space-y-3">
-          <span className="badge badge-soft badge-primary">
-            {idea?.category}
-          </span>
-          <h2 className="text-3xl font-bold ">{idea?.name}</h2>
-          <span className="text-base font-bold">
+        {/* হেডার কন্টেন্ট সেকশন */}
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="inline-block text-xs font-bold tracking-wide uppercase px-3 py-1 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 rounded-xl">
+              {idea?.category}
+            </span>
+
+            {/* ট্যাগস লুপ */}
             {idea?.tags?.map((tag, index) => (
-              <div key={index} className="inline-block  mb-3">
-                <span className="badge badge-primary ml-2">{tag}</span>
-                {index !== idea.tags.length - 1 && " | "}
-              </div>
+              <span
+                key={index}
+                className="inline-block text-xs font-semibold px-2.5 py-1 text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 rounded-lg"
+              >
+                #{tag}
+              </span>
             ))}
-          </span>
-          <p className="break-words whitespace-pre-wrap text-gray-500">
-            {idea.detailedDescription}
+          </div>
+
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+            {idea?.name}
+          </h1>
+
+          <p className="break-words whitespace-pre-wrap text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 font-medium">
+            {idea?.detailedDescription}
           </p>
-          <div className="space-y-6 pt-4 border-t border-gray-300">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="font-semibold text-gray-500">
-                  Estimated Budget
-                </span>
-                <span>{idea.estimatedBudget}</span>
+
+          {/* ইউজার ইনফো এরিয়া */}
+          <div className="flex items-center gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-900">
+            {idea?.userImage &&
+            idea.userImage.startsWith("http") &&
+            !idea.userImage.includes(
+              "googleusercontent.com/profile/picture",
+            ) ? (
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-zinc-200 dark:ring-zinc-800">
+                <Image
+                  src={idea.userImage}
+                  alt={idea?.userName || "User"}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
               </div>
-
-              <div className="flex flex-col">
-                <span className="font-semibold text-gray-500">Audience</span>
-                <span className="break-words whitespace-pre-wrap">
-                  {idea.targetAudience}
-                </span>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 text-white font-bold flex items-center justify-center uppercase select-none text-sm shrink-0">
+                {idea?.userName ? idea.userName.charAt(0) : "U"}
               </div>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-semibold text-gray-500">
-                Problem Statement
+            )}
+            <div className="flex flex-col">
+              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-bold uppercase tracking-wider">
+                Shared by
               </span>
-
-              <p className=" leading-relaxed">{idea.problemStatement}</p>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-semibold text-gray-500">
-                Proposed Solution
+              <span className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                {idea?.userName || "Anonymous User"}
               </span>
-
-              <p className="leading-relaxed">{idea.proposedSolution}</p>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <CommentInput idea={idea}></CommentInput>
-      </div>
-      <div className="space-y-4 mt-5">
-        <div>
-          <h2 className="text-3xl font-bold">Comments</h2>
+
+        {/* টেকনিক্যাল বা মেটা ইনফরমেশন গ্রিড */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-zinc-100 dark:border-zinc-900">
+          <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100/70 dark:border-zinc-900/50 flex flex-col gap-1">
+            <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Estimated Budget
+            </span>
+            <span className="text-base font-extrabold text-zinc-800 dark:text-zinc-200">
+              {idea?.estimatedBudget ? `$${idea.estimatedBudget}` : "Flexible"}
+            </span>
+          </div>
+
+          <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100/70 dark:border-zinc-900/50 flex flex-col gap-1">
+            <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Target Audience
+            </span>
+            <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 break-words whitespace-pre-wrap">
+              {idea?.targetAudience || "General"}
+            </span>
+          </div>
         </div>
+
+        {/* প্রবলেম ও সলিউশন সেকশন */}
+        <div className="space-y-5 pt-2">
+          <div className="flex flex-col gap-1.5">
+            <h3 className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Problem Statement
+            </h3>
+            <p className="text-sm md:text-base leading-relaxed text-zinc-700 dark:text-zinc-300 font-medium bg-zinc-50 dark:bg-zinc-900/20 p-4 rounded-xl border border-zinc-100 dark:border-zinc-900/30">
+              {idea?.problemStatement}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <h3 className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              Proposed Solution
+            </h3>
+            <p className="text-sm md:text-base leading-relaxed text-zinc-700 dark:text-zinc-300 font-medium bg-blue-50/30 dark:bg-blue-950/10 p-4 rounded-xl border border-blue-100/50 dark:border-blue-950/20">
+              {idea?.proposedSolution}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 💬 কমেন্ট ইনপুট বক্স */}
+      <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-3xl p-5 md:p-6 shadow-sm">
+        <CommentInput idea={idea} />
+      </div>
+
+      {/* 💬 কমেন্ট লিস্ট এরিয়া */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 px-2">
+          <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight">
+            Discussion
+          </h2>
+          <span className="px-2 py-0.5 text-xs font-bold bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 rounded-md">
+            {comments.length}
+          </span>
+        </div>
+
         <div className="space-y-4">
           {comments.length > 0 ? (
             comments.map((comment) => (
-              <CommentBox comment={comment} key={comment._id}></CommentBox>
+              <CommentBox comment={comment} key={comment._id} />
             ))
           ) : (
-            <div className="flex min-h-[200px] flex-col items-center justify-center text-center px-6">
-              <div className="text-5xl">💬</div>
-
-              <h2 className="mt-3 text-lg font-semibold text-base-content">
+            <div className="flex min-h-[220px] flex-col items-center justify-center text-center p-8 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-3xl shadow-sm">
+              <div className="text-4xl animate-bounce">💬</div>
+              <h3 className="mt-4 text-base font-bold text-zinc-800 dark:text-zinc-200">
                 No comments yet
-              </h2>
-
-              <p className="mt-1 text-sm text-base-content/60">
-                Be the first one to start the conversation.
+              </h3>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-xs">
+                Be the first one to share your thoughts and start the
+                conversation.
               </p>
             </div>
           )}
