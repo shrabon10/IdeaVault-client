@@ -9,7 +9,7 @@ const PopularCategories = async () => {
   );
   const categories = await res.json();
 
-  // 🎯 আইকন মিসিং বা ইনভ্যালিড থাকলে ব্যাকআপ প্লেসহোল্ডার আইকন
+ 
   const defaultIcon =
     "https://images.unsplash.com/photo-1516321318423-f06f85e504b3";
 

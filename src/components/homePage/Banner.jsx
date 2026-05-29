@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react"; // 🎯 useEffect ইম্পোর্ট করা হলো
+import React, { useState, useEffect } from "react"; 
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -16,16 +16,16 @@ const Banner = () => {
     setCurrentSlide((prev) => (prev === totalSlides ? 1 : prev + 1));
   };
 
-  // 🎯 অটো-স্লাইড এর ম্যাজিক লজিক
+ 
   useEffect(() => {
-    // প্রতি ৪ সেকেন্ড (৪০০০ মিলিসেকেন্ড) পর পর handleNext ফাংশনটি কল হবে
+    
     const slideInterval = setInterval(() => {
       handleNext();
     }, 4000);
 
-    // কম্পোনেন্ট আনমাউন্ট বা স্লাইড চেঞ্জ হলে আগের ইন্টারভালটি ক্লিয়ার করবে (মেমোরি লিক রোধ করতে)
+    
     return () => clearInterval(slideInterval);
-  }, [currentSlide]); // currentSlide ডিপেন্ডেন্সি দেওয়া হয়েছে যাতে ইউজার ক্লিক করলেও ইন্টারভাল রিসেট হয়
+  }, [currentSlide]); 
 
   const slides = [
     {

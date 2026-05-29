@@ -30,7 +30,7 @@ export default function EditCommentModal({ comment }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/comment/${comment._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/comment/${comment._id}`,
         {
           method: "PATCH",
           headers: {

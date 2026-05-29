@@ -37,7 +37,7 @@ export default function EditIdeaModal({ idea }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/idea/${idea._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/idea/${idea._id}`,
         {
           method: "PATCH",
           headers: {

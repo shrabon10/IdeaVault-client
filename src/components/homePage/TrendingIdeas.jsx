@@ -4,7 +4,7 @@ import TrendingCard from "../shared/TrendingCard";
 
 const TrendingIdeas = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/trendingIdeas`,
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/trendingIdeas`,
   );
   const trendingIdeaData = await res.json();
   console.log(trendingIdeaData);
@@ -14,7 +14,8 @@ const TrendingIdeas = async () => {
         <div className="space-y-2">
           <h2 className="text-4xl font-bold">Trending Ideas</h2>
           <p className="text-gray-600">
-            Explore ideas, projects, and conversations happening now.
+            See what the community is building, sharing, and talking about right
+            now.
           </p>
         </div>
         <Link href={"/ideas"} className="btn md:w-auto w-full">
