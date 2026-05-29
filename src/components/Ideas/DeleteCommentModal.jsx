@@ -105,13 +105,11 @@ const DeleteCommentModal = ({ comment }) => {
             </button>
           </div>
 
-          {/* Description */}
           <p className="mt-4 sm:mt-5 text-sm sm:text-base leading-6 text-slate-600">
             This action cannot be undone. The comment will be removed
             permanently from the idea thread.
           </p>
 
-          {/* Buttons */}
           <div className="mt-6 sm:mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
             <button
               type="button"
